@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "encrypt_decrypt.h": "c",
+        "control_led.h": "c",
+        "stdio.h": "c",
+        "config_parameter.h": "c",
+        "led_strip.h": "c",
+        "mqtt.h": "c",
+        "control_relay.h": "c",
+        "system_manage.h": "c",
+        "config_gpio.h": "c"
+    }
+}
