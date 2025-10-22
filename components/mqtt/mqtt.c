@@ -310,7 +310,7 @@ void respond_to_mqtt(int gate, int state, int cmd) {
         //   mqtt_pub("UP4G/SmartEVsafe",json_encrypted);
         strcpy(buffer,json_encrypted);
         xQueueSend(publish_queue_handle,buffer,portMAX_DELAY);
-        printf("data %s\r\n",buffer);
+        //printf("data %s\r\n",buffer);
     }
     
     //printf("data encrtypt: %s\r\n",json_encrypted);
