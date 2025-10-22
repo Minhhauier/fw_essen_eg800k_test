@@ -59,11 +59,11 @@ void sim_mqtt_task(void *pvParameters){
                 //ESP_LOGI("GPS data","%s",data);
                 if(strstr(data,"+QGPSLOC:")!=NULL) gps_process_data(data);
             }
-            if(xQueueReceive(publish_queue_handle,&recv_msg,pdMS_TO_TICKS(50))==pdTRUE){
+            if(xQueueReceive(publish_queue_handle,data,pdMS_TO_TICKS(50))==pdTRUE){
                // ESP_LOGI(MQTT_TAG,"%s",recv_msg);
-                if(strstr(recv_msg,"serial_number")!=NULL) {
-                    mqtt_pub(topic,recv_msg); 
-                    free(recv_msg); 
+                if(strstr(data,"serial_number")!=NULL) {
+                    mqtt_pub(topic,data); 
+        
                 } 
             }
             //Gps function - send read gps request each 28 minutes 

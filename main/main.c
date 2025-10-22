@@ -79,7 +79,7 @@ void app_main(void)
 
    if(read_sim_uart_task==NULL) xTaskCreate(read_and_send_to_queue_task,"read_sim_uart_task",1024*4,NULL,10,&read_sim_uart_task);
    if(sim_task==NULL) xTaskCreate(sim_mqtt_task,"sim_mqtt_task",1024*8,NULL,10,&sim_task);
-   //if(pzem_ds18b20_task==NULL) xTaskCreate(pzem_task,"pzem task",1024*4,NULL,10,&pzem_ds18b20_task); 
+   if(pzem_ds18b20_task==NULL) xTaskCreate(pzem_task,"pzem task",1024*4,NULL,10,&pzem_ds18b20_task); 
 
     //xTaskCreate(gps_get_position_task,"test gps",1024*4,NULL,10,NULL);
     //xTaskCreate(track_ram,"ram task",1024*8,NULL,10,NULL);

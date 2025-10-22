@@ -50,7 +50,8 @@ void send_at_get_respond(char *cmd, int timeout)
 
 void send_at(char *cmd)
 {
-    ESP_LOGI("SIM","sent: %s",cmd);
+    //ESP_LOGI("SIM","sent: %s",cmd);
+    vTaskDelay(50/portTICK_PERIOD_MS);
     uart_write_bytes(UART_SIM_NUM, cmd, strlen(cmd));
     uart_write_bytes(UART_SIM_NUM, "\r\n", 2);
 }
@@ -131,14 +132,14 @@ void read_and_send_to_queue_task(void *pvParameters){
     sim_at_queue_handle = xQueueCreate(10,BUF_SIZE_SIM); // 10: có thể chứa tối đa 10 phần tử, BUF_SIZE_SIM: kích thước của mỗi phần tử
     mqtt_queue_handle = xQueueCreate(10,BUF_SIZE_SIM);
     gps_queue_handle = xQueueCreate(10,BUF_SIZE_SIM);
-    publish_queue_handle = xQueueCreate(10,sizeof(char *));
+    publish_queue_handle = xQueueCreate(10,BUF_SIZE_SIM);
    // is_relay_init();
    while (1)
    {
      int len = uart_read_bytes(UART_SIM_NUM,data,BUF_SIZE_SIM,20);
      if(len>0){
         data[len]='\0';
-        printf("queue rx:%s\r\n",data);
+        //printf("queue rx:%s\r\n",data);
         if(strstr(data,"+QMTRECV:")!=NULL) xQueueSend(mqtt_queue_handle,data,portMAX_DELAY);
         else if(strstr(data,"+QGPSLOC:")!=NULL) xQueueSend(gps_queue_handle,data,portMAX_DELAY);
         else xQueueSend(sim_at_queue_handle,data,portMAX_DELAY);

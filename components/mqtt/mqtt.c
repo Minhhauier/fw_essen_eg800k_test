@@ -74,7 +74,7 @@ void mqtt_pub(char *topic,char *payload){
     // printf("cmd: %s\r\n",cmd);
     // printf("payload: %s\r\n",payload);
 
-   int timeout=5000;
+   int timeout=1000;
    send_at(cmd);
     while(timeout>0 && send_posible==false)
     {
@@ -308,10 +308,9 @@ void respond_to_mqtt(int gate, int state, int cmd) {
     }
     else {
         //   mqtt_pub("UP4G/SmartEVsafe",json_encrypted);
-        char *msg_copy = strdup(json_encrypted);
-        //xQueueSend(publish_queue_handle,buffer,portMAX_DELAY);
-        xQueueSend(publish_queue_handle, &msg_copy, portMAX_DELAY);
-        printf("data %s\r\n",msg_copy);
+        strcpy(buffer,json_encrypted);
+        xQueueSend(publish_queue_handle,buffer,portMAX_DELAY);
+        printf("data %s\r\n",buffer);
     }
     
     //printf("data encrtypt: %s\r\n",json_encrypted);
