@@ -71,7 +71,7 @@ void app_main(void)
     //configure_uart_dynamic_Pzem(UART_PZEM_NUM,9600,TX_PZEM,RX_PZEM);
     all_led_by_status(0);
     set_group_led(&charge_led,COLOR_RED,5);
-    mqtt_init();
+   // mqtt_init();
     //gps_init();
     convert_to_json(NULL);
 
@@ -89,6 +89,6 @@ void app_main(void)
     {
         // int len = uart_read_bytes(UART_SIM_NUM,m,BUF_SIZE_SIM,20/portTICK_PERIOD_MS);
         // if(len>0) printf("%s",m);
-        vTaskDelay(100/portTICK_PERIOD_MS);
+        vTaskDelay(1000/portTICK_PERIOD_MS);
     }
 }

@@ -8,6 +8,7 @@ idf_component_register(SRCS "main.c" "system_manage.c"
                         mqtt
                         #encrypt
                         control_led
+                        drivers
                         #control_relay
                         gps_eg800k
                     )

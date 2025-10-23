@@ -50,8 +50,8 @@ void send_at_get_respond(char *cmd, int timeout)
 
 void send_at(char *cmd)
 {
-    //ESP_LOGI("SIM","sent: %s",cmd);
-    vTaskDelay(30/portTICK_PERIOD_MS);
+    // ESP_LOGI("SIM","sent: %s",cmd);
+    vTaskDelay(30 / portTICK_PERIOD_MS);
     uart_write_bytes(UART_SIM_NUM, cmd, strlen(cmd));
     uart_write_bytes(UART_SIM_NUM, "\r\n", 2);
 }
@@ -128,35 +128,48 @@ char *get_respond(int timeout)
 //     }
 //    // parse_js
 // }
-void read_and_send_to_queue_task(void *pvParameters){
-    sim_at_queue_handle = xQueueCreate(10,BUF_SIZE_SIM); // 10: có thể chứa tối đa 10 phần tử, BUF_SIZE_SIM: kích thước của mỗi phần tử
-    mqtt_queue_handle = xQueueCreate(10,BUF_SIZE_SIM);
-    gps_queue_handle = xQueueCreate(10,BUF_SIZE_SIM);
-    publish_queue_handle = xQueueCreate(10,BUF_SIZE_SIM);
-   // is_relay_init();
-   while (1)
-   {
-     int len = uart_read_bytes(UART_SIM_NUM,data,BUF_SIZE_SIM,20);
-     if(len>0){
-        data[len]='\0';
-        //printf("uart recieved data\r\n");
-        if(strstr(data,"+QMTRECV:")!=NULL) xQueueSend(mqtt_queue_handle,data,portMAX_DELAY);
-        else if(strstr(data,"+QGPSLOC:")!=NULL) xQueueSend(gps_queue_handle,data,portMAX_DELAY);
-        else if(strstr(data,"\"command_type\":101")==NULL) xQueueSend(sim_at_queue_handle,data,portMAX_DELAY);
-        // if (strchr(data,'>')){
-        //     send_posible=true;
-        //     printf("detected >\r\n");
-        // }
-        send_posible=true;
-        // else if(strstr(data,"AT+QMTPUBEX=1,0,0,0")){
-        //     vTaskDelay(10/portTICK_PERIOD_MS);
-        //     send_posible=true;
-        // }
-     }
-   //  vTaskDelay(10/portTICK_PERIOD_MS);
-   }
-   
+void read_and_send_to_queue_task(void *pvParameters)
+{
+    sim_at_queue_handle = xQueueCreate(10, BUF_SIZE_SIM); // 10: có thể chứa tối đa 10 phần tử, BUF_SIZE_SIM: kích thước của mỗi phần tử
+    mqtt_queue_handle = xQueueCreate(10, BUF_SIZE_SIM);
+    gps_queue_handle = xQueueCreate(10, BUF_SIZE_SIM);
+    publish_queue_handle = xQueueCreate(10, BUF_SIZE_SIM);
+    // is_relay_init();
+    send_posible = true;
+    // read_enable = true;
+    char data_receiver[1024];
+    while (1)
+    {
+        if (read_enable)
+        {
+            const int len = uart_read_bytes(UART_SIM_NUM, data_receiver, 1024, 20/portTICK_PERIOD_MS);
+            if (len > 0)
+            {
+
+                data_receiver[len] = 0;
+                printf("%s\r\n",data_receiver);
+                if (strstr(data, "+QMTRECV:") != NULL)
+                    xQueueSend(mqtt_queue_handle, data_receiver, portMAX_DELAY);
+                else if (strstr(data, "+QGPSLOC:") != NULL)
+                    xQueueSend(gps_queue_handle, data_receiver, portMAX_DELAY);
+                else if (strstr(data, "\"command_type\":101") == NULL)
+                    xQueueSend(sim_at_queue_handle, data, portMAX_DELAY);
+                if (strchr(data,'>')){
+                    send_posible=true;
+                    printf("detected >\r\n");
+                }
+                // 
+            //    send_posible = true;
+            }
+        }
+        else
+        {
+            vTaskDelay(1000/portTICK_PERIOD_MS);
+        }
+    }
+    //  vTaskDelay(10/portTICK_PERIOD_MS);
 }
+
 // #define BUF_SIZE_DEVICE (1050)
 // #define RD_BUF_SIZE_DEVICE (BUF_SIZE_DEVICE)
 

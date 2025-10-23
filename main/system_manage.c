@@ -14,7 +14,8 @@
 #include "encrypt_decrypt.h"
 #include "system_manage.h"
 #include "gps_eg800k.h"
-#include"control_led.h"
+#include "control_led.h"
+#include "config_gpio.h"
 //#include "control_relay.h"
 
 static char data[BUF_SIZE_SIM];
@@ -27,6 +28,7 @@ static char topic[256];
 
 void sim_mqtt_task(void *pvParameters){
     TickType_t gps_tick = xTaskGetTickCount();
+    TickType_t led_tick = xTaskGetTickCount();
     snprintf(topic,256,"%s/SmartEVsafe",PUB);
     while (mqtt_sub_success!=true){
         vTaskDelay(1000/portTICK_PERIOD_MS);
@@ -34,12 +36,13 @@ void sim_mqtt_task(void *pvParameters){
     //publish_version(HW_VERSION,FW_VERSION,0);
     bool mqtt_connect=true;
     char *recv_msg;
+    config_gpio_led();
     while (1)
     {
         if(mqtt_sub_success){
             if(mqtt_connect){
                 mqtt_connect=false;
-                set_group_led(&charge_led,COLOR_BLUE,5);
+                gpio_set_level(LED_DECTEC_MQTT, 1);
             }
             if(xQueueReceive(mqtt_queue_handle,data,pdMS_TO_TICKS(50))==pdTRUE){
                 //ESP_LOGI(MQTT_TAG,"%s",data);
@@ -75,7 +78,12 @@ void sim_mqtt_task(void *pvParameters){
         else{
             if(mqtt_connect==false){
                 mqtt_connect=true;
-                set_group_led(&charge_led,COLOR_RED,5);
+                if(xTaskGetTickCount() - led_tick >= pdMS_TO_TICKS(500)){
+                    led_tick=xTaskGetTickCount();
+                    int current_level = gpio_get_level(LED_DECTEC_MQTT);
+                    gpio_set_level(LED_DECTEC_MQTT, !current_level);
+                }
+                //set_group_led(&charge_led,COLOR_RED,5);
             }
             mqtt_init();
         }
