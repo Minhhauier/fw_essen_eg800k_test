@@ -156,10 +156,11 @@ void read_and_send_to_queue_task(void *pvParameters)
                 else if (strstr(data_receiver, "\"command_type\":101") == NULL)
                     xQueueSend(sim_at_queue_handle, data, portMAX_DELAY);
 
-                if (strchr(data_receiver,'>')){
-                    send_posible=true;
-                    // /printf("detected >\r\n");
-                }
+                // if (strchr(data_receiver,'>')){
+                //     send_posible=true;
+                //     // /printf("detected >\r\n");
+                // }
+                send_posible=true;
                 // 
             //    send_posible = true;
             }
