@@ -51,8 +51,8 @@ void mqtt_connect()
 void mqtt_sub()
 {
     snprintf(client_id, 50, "%s_%s", DEVICE_NAME, device_name); // EVsafe_EV4f00a2bf04
-    // snprintf(cmd,sizeof(cmd),"AT+QMTSUB=1,1,%s/SmartEVsafe,0,%s,0",SUB,client_id);
-    snprintf(cmd, sizeof(cmd), "AT+QMTSUB=1,1,EVsafe_EV4f00a2bf04,0,%s,0", client_id);
+    snprintf(cmd,sizeof(cmd),"AT+QMTSUB=1,1,%s/SmartEVsafe,0,%s,0",SUB,client_id);
+    //snprintf(cmd, sizeof(cmd), "AT+QMTSUB=1,1,EVsafe_EV4f00a2bf04,0,%s,0", client_id);
     send_at(cmd);
     char *data = get_respond(1000);
     if (data != NULL)
@@ -342,8 +342,8 @@ void respond_to_mqtt(int gate, int state, int cmd)
              "  }\n"
              "}",
              gate, state, cmd);
-    // char *json_encrypted = encrypt_data(json,device_name,208);
-    char *json_encrypted = encrypt_data(json, "EV4f00a2bf04", 208);
+     char *json_encrypted = encrypt_data(json,device_name,208);
+    //char *json_encrypted = encrypt_data(json, "EV4f00a2bf04", 208);
     // malloc + copy riêng
 
     if (json_encrypted == NULL)

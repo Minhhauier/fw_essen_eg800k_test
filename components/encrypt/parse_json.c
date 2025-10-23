@@ -42,7 +42,8 @@ void parse_json(const char *json_str) {
     const cJSON *data_new = cJSON_GetObjectItemCaseSensitive(data,"data");
     if (cJSON_IsString(serial_number)) {
         char *ser_num = serial_number->valuestring;
-        if (strcmp(ser_num, device_name) ==0 ||strcmp(ser_num,"EV4f00a2bf04") ==0) {
+        //if (strcmp(ser_num, device_name) ==0 ||strcmp(ser_num,"EV4f00a2bf04") ==0)
+         if (strcmp(ser_num, device_name) ==0 ){
             if (cJSON_IsNumber(command_type)) {
                 int cmd_type = command_type->valueint;
                 if (cmd_type == 101) {
