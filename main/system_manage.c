@@ -33,7 +33,7 @@ void sim_mqtt_task(void *pvParameters){
     while (mqtt_sub_success!=true){
         vTaskDelay(1000/portTICK_PERIOD_MS);
     }
-    //publish_version(HW_VERSION,FW_VERSION,0);
+    publish_version(HW_VERSION,FW_VERSION,0);
     bool mqtt_connect=true;
     char *recv_msg;
     config_gpio_led();
@@ -63,7 +63,7 @@ void sim_mqtt_task(void *pvParameters){
                 if(strstr(data,"+QGPSLOC:")!=NULL) gps_process_data(data);
             }
             if(xQueueReceive(publish_queue_handle,data,pdMS_TO_TICKS(50))==pdTRUE){
-               // ESP_LOGI(MQTT_TAG,"%s",recv_msg);
+               // ESP_LOGI(MQTT_TAG,"%s",data);
                 if(strstr(data,"serial_number")!=NULL) {
                     mqtt_pub(topic,data); 
         

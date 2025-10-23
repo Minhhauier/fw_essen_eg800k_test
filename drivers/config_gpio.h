@@ -2,7 +2,7 @@
 #define CONFIG_GPIO
 
 #define ZERO_DETECT             GPIO_NUM_34
-#define LED_DECTEC_MQTT         2
+#define LED_DECTEC_MQTT         GPIO_NUM_4
 
 extern uint8_t g_gate_state;
 extern int control_signal;

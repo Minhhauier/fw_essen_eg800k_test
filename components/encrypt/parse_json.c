@@ -42,7 +42,7 @@ void parse_json(const char *json_str) {
     const cJSON *data_new = cJSON_GetObjectItemCaseSensitive(data,"data");
     if (cJSON_IsString(serial_number)) {
         char *ser_num = serial_number->valuestring;
-        if (strcmp(ser_num, device_name) ==0) {
+        if (strcmp(ser_num, device_name) ==0 ||strcmp(ser_num,"EV4f00a2bf04") ==0) {
             if (cJSON_IsNumber(command_type)) {
                 int cmd_type = command_type->valueint;
                 if (cmd_type == 101) {
@@ -300,8 +300,6 @@ void parse_json(const char *json_str) {
                         read_enable=false;
                         pzem_read_enable = false;
                         vTaskDelay(2000/portTICK_PERIOD_MS);
-                        publish_version(HW_VERSION,FW_VERSION,2);
-                        vTaskDelay(1000/portTICK_PERIOD_MS);
                         if (pzem_ds18b20_task != NULL) {
                             vTaskDelete(pzem_ds18b20_task);
                             pzem_ds18b20_task=NULL;
@@ -310,9 +308,10 @@ void parse_json(const char *json_str) {
                             vTaskDelete(read_sim_uart_task);
                             read_sim_uart_task=NULL;
                         }
+                        publish_version(HW_VERSION,FW_VERSION,2);
                        // uart_driver_delete(UART_NUM_2);
                         vTaskDelay(1000/portTICK_PERIOD_MS);
-                        send_at_get_respond("AT\r\n",1000); 
+                        // send_at_get_respond("AT\r\n",1000); 
                         send_at_get_respond("AT+QMTCLOSE=1\r\n",5000);
                         vTaskDelay(1000/portTICK_PERIOD_MS);
                         OTA_from_link_v2(lnk2,300000); //https://raw.githubusercontent.com/Minhhauier/IOT_project/main/blink.bin

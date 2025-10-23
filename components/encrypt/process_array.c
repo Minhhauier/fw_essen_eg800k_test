@@ -47,6 +47,7 @@ void convert_to_json(const char *data) {
         arry_tam = get_subarray(JSON, "\"iv\"", '}');
       //  printf("arr: %s\r\n",arry_tam);
         if (arry_tam == NULL) {
+            printf("%s",data);
             printf("Đọc không thành công, xem lại định dạng chuỗi truyền\r\n");
             free(hex_iv);
             free(arry_tam);
@@ -77,7 +78,7 @@ void convert_to_json(const char *data) {
             unsigned char *Data_json = decrypt_data(hex_iv, hex_data, hex_tag);
            // printf("rx1: %s\r\n", Data_json);
             snprintf(final_data, sizeof(final_data), "%s:%s}", mess, Data_json);
-           // printf("Data received: %s\r\n", final_data);
+            //printf("Data received: %s\r\n", final_data);
             printf("===\r\n");
             parse_json((const char *)final_data);
             free(hex_iv);

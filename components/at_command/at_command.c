@@ -135,28 +135,30 @@ void read_and_send_to_queue_task(void *pvParameters)
     gps_queue_handle = xQueueCreate(10, BUF_SIZE_SIM);
     publish_queue_handle = xQueueCreate(10, BUF_SIZE_SIM);
     // is_relay_init();
-    send_posible = true;
+    // send_posible = true;
     // read_enable = true;
     char data_receiver[1024];
     while (1)
     {
         if (read_enable)
         {
-            const int len = uart_read_bytes(UART_SIM_NUM, data_receiver, 1024, 20/portTICK_PERIOD_MS);
+            int len = uart_read_bytes(UART_SIM_NUM, data_receiver, 1024, 30/portTICK_PERIOD_MS);
             if (len > 0)
             {
 
                 data_receiver[len] = 0;
-                printf("%s\r\n",data_receiver);
-                if (strstr(data, "+QMTRECV:") != NULL)
+                // printf("data rx: %s\r\n",data_receiver);
+                if (strstr(data_receiver, "+QMTRECV:") != NULL){
                     xQueueSend(mqtt_queue_handle, data_receiver, portMAX_DELAY);
-                else if (strstr(data, "+QGPSLOC:") != NULL)
+                }
+                else if (strstr(data_receiver, "+QGPSLOC:") != NULL)
                     xQueueSend(gps_queue_handle, data_receiver, portMAX_DELAY);
-                else if (strstr(data, "\"command_type\":101") == NULL)
+                else if (strstr(data_receiver, "\"command_type\":101") == NULL)
                     xQueueSend(sim_at_queue_handle, data, portMAX_DELAY);
-                if (strchr(data,'>')){
+
+                if (strchr(data_receiver,'>')){
                     send_posible=true;
-                    printf("detected >\r\n");
+                    // /printf("detected >\r\n");
                 }
                 // 
             //    send_posible = true;
