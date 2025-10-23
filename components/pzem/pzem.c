@@ -223,7 +223,7 @@ void pzem_task(void *pvParameters) {
         if(pzem_read_enable)
         {
         int detect_power=0;
-        for (uint8_t addr = 0x01; addr <= 0x06; addr++) {
+        for (uint8_t addr = 0x01; addr <= 0x04; addr++) {
             PzemData_t data = pzem_read_and_feedback(addr);
             vTaskDelay(pdMS_TO_TICKS(500));  
             // delay ngắn giữa các PZEM để UART không bị dính dữ liệu
